@@ -1,0 +1,7 @@
+requests
+biopython
+py3Dmol
+stmol
+biotite
+ipython_genutils
+logging
