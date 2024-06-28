@@ -2,15 +2,13 @@ import streamlit as st
 import sys
 import os
 from io import StringIO
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
 from parsers import fasta_parser
 from esmfold_api_tool import esmfold
 from show_pdb import display_protein
 import tempfile
 import pandas as pd
 from uniprot_api_funcs.uniprot import get_alternative_fasta_from_uniprot_id
-
-# Añadir el directorio padre al sys.path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
 
 def main():
     st.title("Herramienta de comparación de estructuras")
