@@ -99,7 +99,7 @@ def main():
         #selected_variant = st.selectbox("Selecciona la variante", options=st.session_state.df_variants.index)
         selected_variant = st.selectbox("Selecciona la variante", options=st.session_state.df_variants.index, format_func=lambda x: st.session_state.df_variants.at[x, 'ID'])
 
-        if st.button("Plegar"):
+        if st.button("Plegar FASTA"):
             with st.spinner("Plegando la secuencia seleccionada..."):
                 try:
                     selected_variant_data = st.session_state.df_variants.loc[selected_variant]
