@@ -155,15 +155,7 @@ def main():
     if st.button("Comparar", use_container_width=True):
         if 'pdb_data_1' in st.session_state and 'pdb_data_2' in st.session_state:
             display_protein.show_protein_grid(pdb_data_1=st.session_state.pdb_data_1, pdb_data_2=st.session_state.pdb_data_2)
-            #st.write(f"El RMSD entre las estructuras es: {display_quality_data.calculate_rmsd_from_strings(pdb_str_1=st.session_state.pdb_data_1, pdb_str_2=st.session_state.pdb_data_2):.3f} Å")
-            #rmsd, tmscore = display_quality_data.align_and_compare(st.session_state.pdb_data_1, st.session_state.pdb_data_2)
-            #st.write(f"RMSD: {rmsd:.3f} Å")
-            #st.write(f"TM-score: {tmscore:.3f}")
-            matches = display_quality_data.get_prody_matches(st.session_state.pdb_data_1, st.session_state.pdb_data_2)
-            for match in matches:
-                st.metric("Seq Identity", str(match[2]))
-                st.metric("Seq overlap", str(match[3]))
-                st.metric("RMSD", f"{display_quality_data.calcRMSD(match[0], match[1])} Å")
+            st.metric(f"RMSD", f"{display_quality_data.calculate_rmsd_from_strings(pdb_str_1=st.session_state.pdb_data_1, pdb_str_2=st.session_state.pdb_data_2):.3f} Å")
 
         else:
             if 'pdb_data_1' not in st.session_state:
