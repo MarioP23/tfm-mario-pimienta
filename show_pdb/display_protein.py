@@ -8,13 +8,13 @@ def show_protein_grid(pdb_data_1: str, pdb_data_2):
     
     # Configurar la primera proteína
     pdbview.addModel(pdb_data_1, 'pdb', viewer=(0, 0))
-    pdbview.setStyle({'model': -1, 'cartoon': {'color': 'red'}}, viewer=(0, 0))
+    pdbview.setStyle({'model': -1, 'cartoon': {'color': 'spectrum'}}, viewer=(0, 0))
     pdbview.zoomTo(viewer=(0, 0))
     pdbview.addSurface(py3Dmol.VDW, {'opacity': 0.25}, viewer=(0, 0))
 
     # Configurar la segunda proteína
     pdbview.addModel(pdb_data_2, 'pdb', viewer=(0, 1))
-    pdbview.setStyle({'model': -1, 'cartoon': {'color': 'cyan'}}, viewer=(0, 1))
+    pdbview.setStyle({'model': -1, 'cartoon': {'color': 'spectrum'}}, viewer=(0, 1))
     pdbview.zoomTo(viewer=(0, 1))
     pdbview.addSurface(py3Dmol.VDW, {'opacity': 0.25}, viewer=(0, 1))
     
