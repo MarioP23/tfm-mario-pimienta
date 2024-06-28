@@ -16,7 +16,7 @@ def main():
     # Carga del archivo FASTA
     fasta_file = st.file_uploader("Sube tu fichero FASTA", type=["fasta", "fa"])
     if fasta_file:
-        if st.button("Plegar y visualizar archivo FASTA"):
+        if st.button("Plegar"):
             with st.spinner("Plegando la secuencia del archivo FASTA..."):
                 try:
                     fasta_content = fasta_file.read().decode("utf-8")
@@ -73,16 +73,16 @@ def main():
 
     # Entrada del código UniProt
     uniprot_query_code = st.text_input("Introduce el código UniProt")
-    if st.button("Buscar por código UniProt", use_container_width=True):
-        with st.spinner("Buscando variantes y plegando secuencia desde UniProt..."):
+    if st.button("Buscar", use_container_width=True):
+        with st.spinner("Buscando las 30 primeras variantes desde UniProt..."):
             try:
                 alternative_variants = get_alternative_fasta_from_uniprot_id(uniprot_query_code)
                 if isinstance(alternative_variants, str):
                     st.error(alternative_variants)
                 else:
                     df_variants = pd.DataFrame(alternative_variants).drop(columns=['modified_fasta'])
-                    df_variants.columns = ['ID', 'Tipo de predicción', 'Score de predicción']
-                    df_variants = df_variants.sort_values(by='Score de predicción', ascending=False)
+                    df_variants.columns = ['ID', 'Algorythm', 'Patogenicity score']
+                    df_variants = df_variants.sort_values(by='Patogenicity score', ascending=False)
                     st.session_state.df_variants = df_variants
                     st.session_state.alternative_variants = alternative_variants
             except Exception as e:
@@ -91,7 +91,7 @@ def main():
     # Mostrar el dataframe si está en session_state
     if 'df_variants' in st.session_state:
         st.subheader("Variantes encontradas")
-        st.dataframe(st.session_state.df_variants, use_container_width=True)
+        st.dataframe(st.session_state.df_variants, use_container_width=True, hide_index=True)
 
     # Plegamiento de la variante seleccionada
     if 'df_variants' in st.session_state:
@@ -99,7 +99,7 @@ def main():
         #selected_variant = st.selectbox("Selecciona la variante", options=st.session_state.df_variants.index)
         selected_variant = st.selectbox("Selecciona la variante", options=st.session_state.df_variants.index, format_func=lambda x: st.session_state.df_variants.at[x, 'ID'])
 
-        if st.button("Plegar y visualizar variante seleccionada"):
+        if st.button("Plegar"):
             with st.spinner("Plegando la secuencia seleccionada..."):
                 try:
                     selected_variant_data = st.session_state.df_variants.loc[selected_variant]
@@ -152,7 +152,7 @@ def main():
                     st.error(f"Error al plegar la secuencia seleccionada: {e}")
 
     # Comparación de las proteínas
-    if st.button("Visualizar proteínas comparadas", use_container_width=True):
+    if st.button("Comparar", use_container_width=True):
         if 'pdb_data_1' in st.session_state and 'pdb_data_2' in st.session_state:
             display_protein.show_protein_grid(pdb_data_1=st.session_state.pdb_data_1, pdb_data_2=st.session_state.pdb_data_2)
         else:
