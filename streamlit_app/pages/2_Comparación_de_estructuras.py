@@ -155,7 +155,10 @@ def main():
     if st.button("Comparar", use_container_width=True):
         if 'pdb_data_1' in st.session_state and 'pdb_data_2' in st.session_state:
             display_protein.show_protein_grid(pdb_data_1=st.session_state.pdb_data_1, pdb_data_2=st.session_state.pdb_data_2)
-            st.metric(f"RMSD", f"{display_quality_data.calculate_rmsd_from_strings(pdb_str_1=st.session_state.pdb_data_1, pdb_str_2=st.session_state.pdb_data_2):.3f} Å")
+            try:
+                st.metric(f"RMSD", f"{display_quality_data.calculate_rmsd_from_strings(pdb_str_1=st.session_state.pdb_data_1, pdb_str_2=st.session_state.pdb_data_2):.3f} Å")
+            except Exception as e:
+                st.error(f"Error al calcular RSMD: {e}")
 
         else:
             if 'pdb_data_1' not in st.session_state:
