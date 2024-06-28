@@ -5,3 +5,4 @@ stmol
 biotite
 ipython_genutils
 logging
+prody
