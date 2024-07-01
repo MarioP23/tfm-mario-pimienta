@@ -17,7 +17,7 @@ def main():
         """
         - **Paso 1:** Sube tu fichero FASTA local.
         - **Paso 2:** Introduce el accesion ID de la proteína de UniProt.
-        - **Paso 3:** Se expandirá una tabla con 30 variantes patogénicas relacionadas (puede demorarse varios minutos) y podrás seleccionar una para comparar.
+        - **Paso 3:** Se expandirá una tabla con 30 variantes patogénicas relacionadas y podrás seleccionar una para comparar. *Puede tardar varios minutos*
         """
     )
 
