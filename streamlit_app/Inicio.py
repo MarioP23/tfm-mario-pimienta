@@ -6,46 +6,45 @@ def main():
     layout="wide"
     )
 
-    st.title("Protein Structure Prediction and Visualization")
-    
-    st.header("Descripción del Proyecto")
-    st.write("""
-    Este proyecto tiene como objetivo proporcionar herramientas para la comparación y visualización de estructuras proteicas utilizando datos PDB. 
-    Se utiliza la biblioteca Py3Dmol para la visualización en 3D y Streamlit para la creación de la interfaz de usuario.
-    Además, se ofrece la capacidad de predecir estructuras proteicas a partir de secuencias FASTA utilizando la API ESMFold.
-    """)
+    st.title("Bienvenido a la App de Análisis de Proteínas")
 
-    st.header("Funcionalidades")
-    st.subheader("Comparación de Estructuras PDB")
-    st.write("""
-    - **Entrada por código RSCB PDB**: Permite al usuario introducir un código PDB para descargar y visualizar una estructura.
-    - **Carga de archivos PDB**: Permite al usuario cargar su propio archivo PDB para la visualización.
-    - **Personalización de la Visualización**: Ofrece opciones para personalizar la visualización, incluyendo estilo, opacidad de la superficie, color de la proteína y color de fondo.
-    """)
+    # Descripción general
+    st.write("Esta aplicación te permite analizar y comparar proteínas de diversas maneras. A continuación, te explicamos cada una de las funcionalidades disponibles:")
 
-    st.subheader("Predicción y Visualización de Estructuras Proteicas")
-    st.write("""
-    - **Carga de archivos FASTA**: Permite al usuario cargar un archivo FASTA para la predicción de la estructura proteica.
-    - **Integración con ESMFold**: Utiliza la API ESMFold para predecir la estructura proteica a partir de la secuencia FASTA.
-    - **Visualización 3D**: Muestra la estructura 3D predicha de la proteína.
-    - **Descarga de archivos PDB**: Permite descargar la estructura PDB predicha.
-    """)
+    # Funcionalidad 1: Plegar proteínas a partir de un fichero FASTA o MultiFASTA
+    st.header("📄 Plegar Proteínas desde FASTA o MultiFASTA")
+    st.write(
+        """
+        Con esta funcionalidad, puedes cargar un fichero FASTA o MultiFASTA y obtener la estructura plegada de una o varias proteínas.
+        - **Paso 1:** Sube tu fichero FASTA o MultiFASTA.
+        - **Paso 2:** Procesa el archivo para obtener las estructuras plegadas de las proteínas.
+        """
+    )
 
-    st.header("Ejemplo de Uso")
-    st.subheader("Comparación de Estructuras PDB")
-    st.write("""
-    1. Introduce un código RSCB PDB y presiona "Buscar por código RSCB PDB".
-    2. Sube un archivo PDB desde tu máquina.
-    3. Visualiza ambas proteínas
-    """)
+    # Funcionalidad 2: Comparar una proteína local con una de UniProt
+    st.header("🔍 Comparar Proteína Local con UniProt")
+    st.write(
+        """
+        Aquí puedes comparar una proteína de un fichero FASTA local con una proteína de UniProt utilizando su Accesion ID.
+        - **Paso 1:** Sube tu fichero FASTA local.
+        - **Paso 2:** Introduce el Accesion ID de la proteína de UniProt.
+        - **Paso 3:** Se expandirá una tabla con 30 variantes patogénicas relacionadas y podrás seleccionar una para comparar.
+        """
+    )
 
-    st.subheader("Predicción y Visualización de Estructuras Proteicas")
-    st.write("""
-    1. Sube un archivo FASTA.
-    2. Presiona "Ejecutar" para predecir la estructura proteica utilizando ESMFold.
-    3. Selecciona la proteína que deseas visualizar y ajusta las opciones de visualización según tus preferencias.
-    4. Descarga el archivo PDB si lo deseas.
-    """)
+    # Funcionalidad 3: Comparar dos proteínas a partir de UniProt ID y una mutación
+    st.header("⚖️ Comparar Proteínas a partir de UniProt ID y Mutación")
+    st.write(
+        """
+        Esta funcionalidad te permite comparar dos proteínas utilizando el ID de UniProt y una mutación introducida.
+        - **Paso 1:** Introduce el UniProt ID de la primera proteína. Se abrirá un pop-up con su información de Uniprot.
+        - **Paso 2:** Introduce la mutación con el formato A123B.
+        - **Paso 3:** Compara las dos proteínas para observar las diferencias causadas por la mutación.
+        """
+    )
+
+    # Footer
+    st.write("¡Explora cada una de las funcionalidades y saca el máximo provecho de tu análisis de proteínas!")
 
     st.header("Bibliografía")
     st.write("""
