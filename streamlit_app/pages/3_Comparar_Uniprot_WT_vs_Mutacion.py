@@ -57,14 +57,14 @@ def main():
     if 'fasta_wt' in st.session_state and 'fasta_mutated' in st.session_state:
         if st.button("Plegar proteínas", use_container_width=True):
             try:
-                with st.spinner("Plegando la secuencia Wild Type..."):
+                with st.spinner(f"Plegando la secuencia {uniprot_query_code}-WT ..."):
                     with tempfile.NamedTemporaryFile(delete=False) as tmpfile:
                         esmfold.fold_sequence(fasta_seq=st.session_state.fasta_wt, output_pdb_filepath=tmpfile.name)
                         tmpfile.seek(0)
                         wt_pdb_data = tmpfile.read().decode("utf-8")
                         st.session_state.wt_pdb_data = wt_pdb_data
                 
-                with st.spinner("Plegando la secuencia Mutated..."):
+                with st.spinner(f"Plegando la secuencia {uniprot_query_code}-{mutation} ..."):
                     with tempfile.NamedTemporaryFile(delete=False) as tmpfile:
                         esmfold.fold_sequence(fasta_seq=st.session_state.fasta_mutated, output_pdb_filepath=tmpfile.name)
                         tmpfile.seek(0)
@@ -84,14 +84,14 @@ def main():
                 
                 # Descarga de ficheros PDB
                 st.download_button(
-                    label="Descargar Wild Type PDB",
+                    label=f"Descargar {uniprot_query_code}-WT PDB",
                     data=st.session_state.wt_pdb_data,
                     file_name="wild_type.pdb",
                     mime="chemical/x-pdb"
                 )
                 
                 st.download_button(
-                    label="Descargar Mutated PDB",
+                    label=f"Descargar {uniprot_query_code}-{mutation} PDB",
                     data=st.session_state.mutated_pdb_data,
                     file_name="mutated.pdb",
                     mime="chemical/x-pdb"
