@@ -18,7 +18,7 @@ def main():
     st.write(
         """
         - **Paso 1:** Introduce el UniProt ID de la primera proteína. Se abrirá un pop-up con su información de Uniprot. *Es recomendable expandir la barra lateral para una mejor visualización*
-        - **Paso 2:** Introduce la mutación con el formato A123B.
+        - **Paso 2:** Introduce la mutación con el formato A123B. *Si el cambio es Q>P y la posición es 2, hay que introducir Q2P*
         - **Paso 3:** Compara las dos proteínas para observar las diferencias causadas por la mutación.
         """
     )
