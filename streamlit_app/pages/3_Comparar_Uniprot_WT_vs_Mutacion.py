@@ -31,7 +31,7 @@ def main():
 
     if 'uniprot_query_code' in st.session_state:
         with st.sidebar:
-            url = f"https://www.uniprot.org/uniprotkb/{st.session_state.uniprot_query_code}/entry"
+            url = f"https://www.uniprot.org/uniprotkb/{st.session_state.uniprot_query_code}/variant-viewer"
             st.components.v1.iframe(url, height=600, scrolling=True)
         
         mutation = st.text_input("Introduce la mutación a buscar", placeholder="Q2P")
