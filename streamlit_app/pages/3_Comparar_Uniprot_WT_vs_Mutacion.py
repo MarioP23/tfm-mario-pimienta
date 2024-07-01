@@ -45,7 +45,7 @@ def main():
                     else:
                         fasta_wt = query_uniprot['fasta']['wild_type']
                         fasta_mutated = query_uniprot['fasta']['mutated']
-                        st.success(f"Secuencias FASTA obtenidas para {uniprot_query_code}-WT y {uniprot_query_code}-{mutation}")
+                        st.success(f"Secuencias FASTA obtenidas para {st.session_state.uniprot_query_code}-WT y {st.session_state.uniprot_query_code}-{mutation}")
                         
                         st.session_state.fasta_wt = fasta_wt
                         st.session_state.fasta_mutated = fasta_mutated
