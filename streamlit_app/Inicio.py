@@ -6,13 +6,14 @@ def main():
     layout="wide"
     )
 
-    st.title("Bienvenido a la App de Análisis de Proteínas")
+    st.title("ANÁLISIS DE ESTRUCTURAS DE PROTEÍNAS CON ESMFold2 y UniProt")
+    st.subheader("Mario Pimienta Calderón - Máster en Bioinformática - Universidad de Murcia")
 
     # Descripción general
-    st.write("Esta aplicación te permite analizar y comparar proteínas de diversas maneras. A continuación, te explicamos cada una de las funcionalidades disponibles:")
+    st.write("Esta aplicación te permite analizar y comparar proteínas de diversas maneras. A continuación, se explican cada una de las funcionalidades disponibles:")
 
     # Funcionalidad 1: Plegar proteínas a partir de un fichero FASTA o MultiFASTA
-    st.header("📄 Plegar Proteínas desde FASTA o MultiFASTA")
+    st.header("📄 Plegar proteínas desde FASTA o multiFASTA")
     st.write(
         """
         Con esta funcionalidad, puedes cargar un fichero FASTA o MultiFASTA y obtener la estructura plegada de una o varias proteínas.
@@ -22,18 +23,18 @@ def main():
     )
 
     # Funcionalidad 2: Comparar una proteína local con una de UniProt
-    st.header("🔍 Comparar Proteína Local con UniProt")
+    st.header("🔍 Comparar proteína local con UniProt")
     st.write(
         """
-        Aquí puedes comparar una proteína de un fichero FASTA local con una proteína de UniProt utilizando su Accesion ID.
+        Aquí puedes comparar una proteína de un fichero FASTA local con una proteína de UniProt utilizando su accesion ID.
         - **Paso 1:** Sube tu fichero FASTA local.
-        - **Paso 2:** Introduce el Accesion ID de la proteína de UniProt.
-        - **Paso 3:** Se expandirá una tabla con 30 variantes patogénicas relacionadas y podrás seleccionar una para comparar.
+        - **Paso 2:** Introduce el accesion ID de la proteína de UniProt.
+        - **Paso 3:** Se expandirá una tabla con 30 variantes patogénicas relacionadas (puede demorarse varios minutos) y podrás seleccionar una para comparar.
         """
     )
 
     # Funcionalidad 3: Comparar dos proteínas a partir de UniProt ID y una mutación
-    st.header("⚖️ Comparar Proteínas a partir de UniProt ID y Mutación")
+    st.header("⚖️ Comparar proteínas a partir de UniProt ID y mutación")
     st.write(
         """
         Esta funcionalidad te permite comparar dos proteínas utilizando el ID de UniProt y una mutación introducida.
@@ -42,9 +43,6 @@ def main():
         - **Paso 3:** Compara las dos proteínas para observar las diferencias causadas por la mutación.
         """
     )
-
-    # Footer
-    st.write("¡Explora cada una de las funcionalidades y saca el máximo provecho de tu análisis de proteínas!")
 
     st.header("Bibliografía")
     st.write("""

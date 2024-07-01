@@ -11,7 +11,15 @@ import pandas as pd
 from uniprot_api_funcs.uniprot import get_alternative_fasta_from_uniprot_id
 
 def main():
-    st.title("Herramienta de comparación de estructuras")
+    st.title("Herramienta de comparación de estructuras I")
+
+    st.write(
+        """
+        - **Paso 1:** Sube tu fichero FASTA local.
+        - **Paso 2:** Introduce el accesion ID de la proteína de UniProt.
+        - **Paso 3:** Se expandirá una tabla con 30 variantes patogénicas relacionadas (puede demorarse varios minutos) y podrás seleccionar una para comparar.
+        """
+    )
 
     # Carga del archivo FASTA
     fasta_file = st.file_uploader("Sube tu fichero FASTA", type=["fasta", "fa"])

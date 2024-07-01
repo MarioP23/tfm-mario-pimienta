@@ -11,6 +11,13 @@ from show_pdb import display_protein
 def main():
     st.title("Predicción y visualización de proteínas con ESMFold2")
 
+    st.write(
+        """
+        - **Paso 1:** Sube tu fichero FASTA o MultiFASTA.
+        - **Paso 2:** Procesa el archivo para obtener las estructuras plegadas de las proteínas.
+        """
+    )
+
     # Carga del archivo FASTA
     fasta_file = st.file_uploader("Sube tu fichero FASTA (máx 400 aa)", type=["fasta"])
     if fasta_file is not None:

@@ -13,7 +13,15 @@ from show_pdb import display_protein, display_quality_data
 from uniprot_api_funcs.uniprot import query_variant_uniprot
 
 def main():
-    st.title("Herramienta de comparación de estructuras")
+    st.title("Herramienta de comparación de estructuras II")
+
+    st.write(
+        """
+        - **Paso 1:** Introduce el UniProt ID de la primera proteína. Se abrirá un pop-up con su información de Uniprot.
+        - **Paso 2:** Introduce la mutación con el formato A123B.
+        - **Paso 3:** Compara las dos proteínas para observar las diferencias causadas por la mutación.
+        """
+    )
 
     # Entrada del código UniProt
     uniprot_query_code = st.text_input("Introduce el código UniProt", placeholder="P09936")
