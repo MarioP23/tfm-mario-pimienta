@@ -38,7 +38,7 @@ def main():
     st.write(
         """
         Esta funcionalidad te permite comparar dos proteínas utilizando el ID de UniProt y una mutación introducida.
-        - **Paso 1:** Introduce el UniProt ID de la primera proteína. Se abrirá un pop-up con su información de Uniprot.
+        - **Paso 1:** Introduce el UniProt ID de la proteína. Se abrirá un pop-up con su información de Uniprot.
         - **Paso 2:** Introduce la mutación con el formato A123B.
         - **Paso 3:** Compara las dos proteínas para observar las diferencias causadas por la mutación.
         """
