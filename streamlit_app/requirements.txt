@@ -5,3 +5,5 @@ stmol
 biotite
 ipython_genutils
 logging
+matplotlib
+fpdf

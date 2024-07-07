@@ -1,16 +1,30 @@
 import streamlit as st
 import sys
 import os
-from io import StringIO
+import logging
 import tempfile
 import requests
 import re
+import pandas as pd
+import numpy as np
+import biotite.sequence as seq
+import biotite.sequence.align as align
+import biotite.structure as struc
+import biotite.structure.io as strucio
+import biotite.sequence.graphics as graphics
+from matplotlib.colors import ListedColormap
+import matplotlib.pyplot as plt
 
+# Setup logging
+logging.basicConfig(filename='debug.log', level=logging.DEBUG, format='%(asctime)s %(message)s')
+
+# Import custom modules
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
 from parsers import fasta_parser
 from esmfold_api_tool import esmfold
 from show_pdb import display_protein, display_quality_data
 from uniprot_api_funcs.uniprot import query_variant_uniprot
+from eval.eval_sequences import align_sequences, ramachandran_plot
 
 def main():
     st.title("Herramienta de comparación de estructuras II")
@@ -58,65 +72,98 @@ def main():
         if st.button("Plegar proteínas", use_container_width=True):
             try:
                 with st.spinner(f"Plegando la secuencia {uniprot_query_code}-WT ..."):
-                    with tempfile.NamedTemporaryFile(delete=False) as tmpfile:
-                        esmfold.fold_sequence(fasta_seq=st.session_state.fasta_wt, output_pdb_filepath=tmpfile.name)
-                        tmpfile.seek(0)
-                        wt_pdb_data = tmpfile.read().decode("utf-8")
-                        st.session_state.wt_pdb_data = wt_pdb_data
+                    with tempfile.NamedTemporaryFile(delete=False, suffix='.pdb') as tmpfile_wt:
+                        esmfold.fold_sequence(fasta_seq=st.session_state.fasta_wt, output_pdb_filepath=tmpfile_wt.name)
+                        tmpfile_wt.seek(0)
+                        wt_pdb_data = tmpfile_wt.read().decode("utf-8")
+                        st.session_state.wt_pdb_filepath = tmpfile_wt.name
                 
                 with st.spinner(f"Plegando la secuencia {uniprot_query_code}-{mutation} ..."):
-                    with tempfile.NamedTemporaryFile(delete=False) as tmpfile:
-                        esmfold.fold_sequence(fasta_seq=st.session_state.fasta_mutated, output_pdb_filepath=tmpfile.name)
-                        tmpfile.seek(0)
-                        mutated_pdb_data = tmpfile.read().decode("utf-8")
-                        st.session_state.mutated_pdb_data = mutated_pdb_data
+                    with tempfile.NamedTemporaryFile(delete=False, suffix='.pdb') as tmpfile_mutated:
+                        esmfold.fold_sequence(fasta_seq=st.session_state.fasta_mutated, output_pdb_filepath=tmpfile_mutated.name)
+                        tmpfile_mutated.seek(0)
+                        mutated_pdb_data = tmpfile_mutated.read().decode("utf-8")
+                        st.session_state.mutated_pdb_filepath = tmpfile_mutated.name
                 
                 # Comparación de las proteínas
-                display_protein.show_protein_grid(pdb_data_1=st.session_state.wt_pdb_data, pdb_data_2=st.session_state.mutated_pdb_data)
+                display_protein.show_protein_grid(pdb_data_1=wt_pdb_data, pdb_data_2=mutated_pdb_data)
+                
+                # Calculo del RMSD
                 try:
                     rmsd_value = display_quality_data.calculate_rmsd_from_strings(
-                        pdb_str_1=st.session_state.wt_pdb_data, 
-                        pdb_str_2=st.session_state.mutated_pdb_data
+                        pdb_str_1=wt_pdb_data, 
+                        pdb_str_2=mutated_pdb_data
                     )
-                    st.metric(f"RMSD", f"{rmsd_value:.3f} Å")
+                    colu1, colu2 = st.columns(2)
+                    colu1.metric("RMSD", f"{rmsd_value:.3f} Å")
                 except Exception as e:
                     st.error(f"Error al calcular RMSD: {e}")
                 
+                # Calculo de otros valores
+                try:
+                    alignment_score, alignment_img_buf = align_sequences(st.session_state.fasta_wt, st.session_state.fasta_mutated)
+                    ramachandran_img_wt_buf = ramachandran_plot(st.session_state.wt_pdb_filepath)
+                    ramachandran_img_mutated_buf = ramachandran_plot(st.session_state.mutated_pdb_filepath)
+                    
+                    colu2.metric("Alignment Score", f"{alignment_score}")
+
+                    # Mostrar gráficos en un grid en Streamlit
+                    col1, col2, col3 = st.columns(3)
+
+                    with col1:
+                        st.image(alignment_img_buf, caption="Alineamiento de secuencias")
+                    with col2:
+                        st.image(ramachandran_img_wt_buf, caption="Gráfico de Ramachandran - WT")
+                    with col3:
+                        st.image(ramachandran_img_mutated_buf, caption="Gráfico de Ramachandran - Mutated")
+
+                except Exception as e:
+                    st.error(f"Error al calcular las nuevas métricas: {e}")
+
                 # Descarga de ficheros PDB
                 st.download_button(
                     label=f"Descargar {uniprot_query_code}-WT PDB",
-                    data=st.session_state.wt_pdb_data,
+                    data=wt_pdb_data,
                     file_name="wild_type.pdb",
-                    mime="chemical/x-pdb"
+                    mime="chemical/x-pdb",
+                    use_container_width=True
                 )
                 
                 st.download_button(
                     label=f"Descargar {uniprot_query_code}-{mutation} PDB",
-                    data=st.session_state.mutated_pdb_data,
+                    data=mutated_pdb_data,
                     file_name="mutated.pdb",
-                    mime="chemical/x-pdb"
+                    mime="chemical/x-pdb",
+                    use_container_width=True
                 )
                 
                 # Crear fichero multiFASTA
-                multifasta = f"{st.session_state.fasta_wt}\n{st.session_state.fasta_mutated}"
+                multifasta = f">{uniprot_query_code}-WT\n{st.session_state.fasta_wt}\n>{uniprot_query_code}-{mutation}\n{st.session_state.fasta_mutated}"
                 st.download_button(
                     label="Descargar multiFASTA",
                     data=multifasta,
                     file_name="multifasta.fasta",
-                    mime="text/plain"
+                    mime="text/plain",
+                    use_container_width=True
                 )
 
                 # Crear fichero PDB combinado
-                combined_pdb = st.session_state.wt_pdb_data + "\n" + st.session_state.mutated_pdb_data
+                combined_pdb = wt_pdb_data + "\n" + mutated_pdb_data
                 st.download_button(
                     label="Descargar PDB combinado",
                     data=combined_pdb,
                     file_name="combined.pdb",
-                    mime="chemical/x-pdb"
+                    mime="chemical/x-pdb",
+                    use_container_width=True
                 )
-                
+
             except Exception as e:
                 st.error(f"Error al plegar las secuencias: {e}")
+            finally:
+                if 'wt_pdb_filepath' in st.session_state:
+                    os.unlink(st.session_state.wt_pdb_filepath)
+                if 'mutated_pdb_filepath' in st.session_state:
+                    os.unlink(st.session_state.mutated_pdb_filepath)
 
 if __name__ == "__main__":
     main()
