@@ -58,3 +58,32 @@ def ramachandran_plot(pdb_filepath):
         return img_buf
     except Exception as e:
         raise ValueError(f"Error en ramachandran_plot: {e}")
+    
+def ramachandran_plot_2(pdb_content1, pdb_content2, color1='blue', color2='red', alpha1=0.5, alpha2=0.5):
+    try:
+        array1 = strucio.load_structure(pdb_content1)
+        array2 = strucio.load_structure(pdb_content2)
+        
+        if array1.coord.shape[0] < 3 or array2.coord.shape[0] < 3:
+            raise ValueError("Una de las estructuras tiene menos de tres átomos, no se pueden calcular todas las medidas geométricas.")
+        
+        phi1, psi1, _ = struc.dihedral_backbone(array1)
+        phi2, psi2, _ = struc.dihedral_backbone(array2)
+        
+        plt.figure()
+        plt.scatter(phi1 * 360/(2*np.pi), psi1 * 360/(2*np.pi), color=color1, alpha=alpha1, label="WT")
+        plt.scatter(phi2 * 360/(2*np.pi), psi2 * 360/(2*np.pi), color=color2, alpha=alpha2, label="Mutated")
+        plt.xlim(-180, 180)
+        plt.ylim(-180, 180)
+        plt.xlabel("$\phi$")
+        plt.ylabel("$\psi$")
+        plt.legend()
+        
+        img_buf = BytesIO()
+        plt.savefig(img_buf, format='png')
+        plt.close()
+        img_buf.seek(0)
+        
+        return img_buf
+    except Exception as e:
+        raise ValueError(f"Error en ramachandran_plot: {e}")
