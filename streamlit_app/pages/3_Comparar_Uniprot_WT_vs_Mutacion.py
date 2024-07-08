@@ -122,23 +122,6 @@ def main():
                 except Exception as e:
                     st.error(f"Error al calcular las nuevas métricas: {e}")
 
-                # Descarga de ficheros PDB
-                st.download_button(
-                    label=f"Descargar {uniprot_query_code}-WT PDB",
-                    data=wt_pdb_data,
-                    file_name="wild_type.pdb",
-                    mime="chemical/x-pdb",
-                    use_container_width=True
-                )
-                
-                st.download_button(
-                    label=f"Descargar {uniprot_query_code}-{mutation} PDB",
-                    data=mutated_pdb_data,
-                    file_name="mutated.pdb",
-                    mime="chemical/x-pdb",
-                    use_container_width=True
-                )
-
                 # Crear un archivo ZIP en memoria
                 buffer = io.BytesIO()
                 with zipfile.ZipFile(buffer, "w") as zip_file:
@@ -155,7 +138,7 @@ def main():
                     file_name="pdb_files.zip",
                     mime="application/zip",
                     use_container_width=True
-)
+                )
                 
                 # Crear fichero multiFASTA
                 multifasta = f"{st.session_state.fasta_wt}\n{st.session_state.fasta_mutated}"
