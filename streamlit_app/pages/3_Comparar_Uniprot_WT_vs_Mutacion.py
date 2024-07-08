@@ -138,22 +138,12 @@ def main():
                 )
                 
                 # Crear fichero multiFASTA
-                multifasta = f">{uniprot_query_code}-WT\n{st.session_state.fasta_wt}\n>{uniprot_query_code}-{mutation}\n{st.session_state.fasta_mutated}"
+                multifasta = f"{st.session_state.fasta_wt}\n{st.session_state.fasta_mutated}"
                 st.download_button(
                     label="Descargar multiFASTA",
                     data=multifasta,
                     file_name="multifasta.fasta",
                     mime="text/plain",
-                    use_container_width=True
-                )
-
-                # Crear fichero PDB combinado
-                combined_pdb = wt_pdb_data + "\n" + mutated_pdb_data
-                st.download_button(
-                    label="Descargar PDB combinado",
-                    data=combined_pdb,
-                    file_name="combined.pdb",
-                    mime="chemical/x-pdb",
                     use_container_width=True
                 )
 
