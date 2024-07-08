@@ -14,6 +14,8 @@ import biotite.structure.io as strucio
 import biotite.sequence.graphics as graphics
 from matplotlib.colors import ListedColormap
 import matplotlib.pyplot as plt
+import zipfile
+import io
 
 # Setup logging
 logging.basicConfig(filename='debug.log', level=logging.DEBUG, format='%(asctime)s %(message)s')
@@ -136,6 +138,24 @@ def main():
                     mime="chemical/x-pdb",
                     use_container_width=True
                 )
+
+                # Crear un archivo ZIP en memoria
+                buffer = io.BytesIO()
+                with zipfile.ZipFile(buffer, "w") as zip_file:
+                    zip_file.writestr("wild_type.pdb", wt_pdb_data)
+                    zip_file.writestr("mutated.pdb", mutated_pdb_data)
+
+                # Mover el puntero al inicio del archivo
+                buffer.seek(0)
+
+                # Botón para descargar el archivo ZIP
+                st.download_button(
+                    label=f"Descargar {uniprot_query_code} - PDBs (WT y Mutado)",
+                    data=buffer,
+                    file_name="pdb_files.zip",
+                    mime="application/zip",
+                    use_container_width=True
+)
                 
                 # Crear fichero multiFASTA
                 multifasta = f"{st.session_state.fasta_wt}\n{st.session_state.fasta_mutated}"
