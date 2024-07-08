@@ -26,7 +26,7 @@ from parsers import fasta_parser
 from esmfold_api_tool import esmfold
 from show_pdb import display_protein, display_quality_data
 from uniprot_api_funcs.uniprot import query_variant_uniprot
-from eval.eval_sequences import align_sequences, ramachandran_plot, ramachandran_plot_2
+from eval.eval_sequences import align_sequences, ramachandran_plot
 
 def main():
     st.title("Herramienta de comparación de estructuras II")
@@ -104,23 +104,14 @@ def main():
                 # Calculo de otros valores
                 try:
                     alignment_score, alignment_img_buf = align_sequences(st.session_state.fasta_wt, st.session_state.fasta_mutated)
-                    ramachandran_img_wt_buf = ramachandran_plot(st.session_state.wt_pdb_filepath)
-                    ramachandran_img_mutated_buf = ramachandran_plot(st.session_state.mutated_pdb_filepath)
-                    ramachandran_img_both_buf = ramachandran_plot_2(st.session_state.wt_pdb_filepath, st.session_state.mutated_pdb_filepath)
+                    ramachandran_img_both_buf = ramachandran_plot(st.session_state.wt_pdb_filepath, st.session_state.mutated_pdb_filepath)
                     
                     colu2.metric("Alignment Score", f"{alignment_score}")
 
-                    # Mostrar gráficos en un grid en Streamlit
-                    col1, col2, col3 = st.columns(3)
-
-                    with col1:
+                    with colu1:
                         st.image(alignment_img_buf, caption="Alineamiento de secuencias")
-                    with col2:
-                        st.image(ramachandran_img_wt_buf, caption="Gráfico de Ramachandran - WT")
-                    with col3:
-                        st.image(ramachandran_img_mutated_buf, caption="Gráfico de Ramachandran - Mutated")
-                    
-                    st.image(ramachandran_img_both_buf, caption="Ramachandran")
+                    with colu2:
+                        st.image(ramachandran_img_both_buf, caption="Gráfico de Ramachandran")
 
                 except Exception as e:
                     st.error(f"Error al calcular las nuevas métricas: {e}")

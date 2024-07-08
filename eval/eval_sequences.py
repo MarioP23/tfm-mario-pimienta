@@ -34,7 +34,7 @@ def align_sequences(query_seq_str, hit_seq_str):
     
     return alignment.score, img_buf
 
-def ramachandran_plot(pdb_filepath):
+def ramachandran_plot_individ(pdb_filepath):
     try:
         array = strucio.load_structure(pdb_filepath)
       
@@ -59,7 +59,7 @@ def ramachandran_plot(pdb_filepath):
     except Exception as e:
         raise ValueError(f"Error en ramachandran_plot: {e}")
     
-def ramachandran_plot_2(pdb_content1, pdb_content2, color1='blue', color2='red', alpha1=0.5, alpha2=0.5):
+def ramachandran_plot(pdb_content1, pdb_content2, color1='blue', color2='red', alpha1=0.5, alpha2=0.5):
     try:
         array1 = strucio.load_structure(pdb_content1)
         array2 = strucio.load_structure(pdb_content2)
