@@ -115,14 +115,14 @@ def main():
                         with colu1:
                             st.image(alignment_img_buf, caption="Alineamiento de secuencias")
                         with colu2:
-                            st.image(ramachandran_img_both_buf, caption="Gráfico de Ramachandran - WT")
+                            st.image(ramachandran_img_both_buf, caption="Gráfico de Ramachandran")
 
                     except Exception as e:
                         st.error(f"Error al calcular las métricas: {e}")
 
                     # Crear un archivo ZIP en memoria
                     buffer = io.BytesIO()
-                    multifasta = f"{st.session_state.fasta_wt}\n{st.session_state.fasta_mutated}"
+                    multifasta = f">{protein_name}\n{st.session_state.fasta_wt}\n>{protein_name_mutated}\n{st.session_state.fasta_mutated}"
                     with zipfile.ZipFile(buffer, "w") as zip_file:
                         zip_file.writestr(f"{uniprot_query_code}-WildType.pdb", wt_pdb_data)
                         zip_file.writestr(f"{uniprot_query_code}-{selected_variant}.pdb", mutated_pdb_data)
