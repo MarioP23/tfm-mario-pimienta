@@ -69,6 +69,7 @@ def main():
                     # Plegar el FASTA cargado
                     protein_name = list(st.session_state.fasta_protein_dict_uploaded.keys())[0]
                     fasta_seq = st.session_state.fasta_protein_dict_uploaded[protein_name]
+                    st.session_state.fasta_wt = fasta_seq
 
                     with tempfile.NamedTemporaryFile(delete=False, suffix='.pdb') as tmpfile_wt:
                         esmfold.fold_sequence(fasta_seq=fasta_seq, output_pdb_filepath=tmpfile_wt.name)
@@ -82,6 +83,7 @@ def main():
                     fasta_protein_dict = fasta_parser.parse_fasta_file(fasta_content=StringIO(modified_fasta))
                     protein_name_mutated = list(fasta_protein_dict.keys())[0]
                     mutated_fasta_seq = fasta_protein_dict[protein_name_mutated]
+                    st.session_state.fasta_mutated = mutated_fasta_seq
 
                     with tempfile.NamedTemporaryFile(delete=False, suffix='.pdb') as tmpfile_mutated:
                         esmfold.fold_sequence(fasta_seq=mutated_fasta_seq, output_pdb_filepath=tmpfile_mutated.name)
@@ -113,18 +115,18 @@ def main():
                         with colu1:
                             st.image(alignment_img_buf, caption="Alineamiento de secuencias")
                         with colu2:
-                            st.image(ramachandran_img_both_buf, caption="Gráfico de Ramachandran - WT")
+                            st.image(ramachandran_img_both_buf, caption="Gráfico de Ramachandran")
 
                     except Exception as e:
                         st.error(f"Error al calcular las métricas: {e}")
 
                     # Crear un archivo ZIP en memoria
                     buffer = io.BytesIO()
-                    multifasta = f"{st.session_state.fasta_wt}\n{st.session_state.fasta_mutated}"
+                    multifasta = f">{protein_name}\n{st.session_state.fasta_wt}\n>{protein_name_mutated}\n{st.session_state.fasta_mutated}"
                     with zipfile.ZipFile(buffer, "w") as zip_file:
                         zip_file.writestr(f"{uniprot_query_code}-WildType.pdb", wt_pdb_data)
-                        zip_file.writestr(f"{uniprot_query_code}-{mutation}.pdb", mutated_pdb_data)
-                        zip_file.writestr(f"{uniprot_query_code}-WT_{mutation}.fasta", multifasta)
+                        zip_file.writestr(f"{uniprot_query_code}-{selected_variant}.pdb", mutated_pdb_data)
+                        zip_file.writestr(f"{uniprot_query_code}-WT_{selected_variant}.fasta", multifasta)
 
                     # Mover el puntero al inicio del archivo
                     buffer.seek(0)
@@ -147,8 +149,4 @@ def main():
                         os.unlink(st.session_state.mutated_pdb_filepath)
 
 if __name__ == "__main__":
-    if 'pdb_data_1' not in st.session_state:
-        st.session_state.pdb_data_1 = None
-    if 'pdb_data_2' not in st.session_state:
-        st.session_state.pdb_data_2 = None
     main()
