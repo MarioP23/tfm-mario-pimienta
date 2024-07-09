@@ -120,29 +120,21 @@ def main():
 
                     # Crear un archivo ZIP en memoria
                     buffer = io.BytesIO()
+                    multifasta = f"{st.session_state.fasta_wt}\n{st.session_state.fasta_mutated}"
                     with zipfile.ZipFile(buffer, "w") as zip_file:
                         zip_file.writestr(f"{uniprot_query_code}-WildType.pdb", wt_pdb_data)
                         zip_file.writestr(f"{uniprot_query_code}-{mutation}.pdb", mutated_pdb_data)
+                        zip_file.writestr(f"{uniprot_query_code}-WT_{mutation}.fasta", multifasta)
 
                     # Mover el puntero al inicio del archivo
                     buffer.seek(0)
 
                     # Botón para descargar el archivo ZIP
                     st.download_button(
-                        label=f"Descargar {uniprot_query_code} - PDBs (WT y Mutado)",
+                        label=f"Descargar ficheros PDB y FASTA de {uniprot_query_code}",
                         data=buffer,
-                        file_name="pdb_files.zip",
+                        file_name=f"{uniprot_query_code}_files.zip",
                         mime="application/zip",
-                        use_container_width=True
-                    )
-                    
-                    # Crear fichero multiFASTA
-                    multifasta = f">{uniprot_query_code}-WT\n{fasta_seq}\n>{uniprot_query_code}-{selected_variant_data['ID']}\n{mutated_fasta_seq}"
-                    st.download_button(
-                        label="Descargar multiFASTA",
-                        data=multifasta,
-                        file_name="multifasta.fasta",
-                        mime="text/plain",
                         use_container_width=True
                     )
 
