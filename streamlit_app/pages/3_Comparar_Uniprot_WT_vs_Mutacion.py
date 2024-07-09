@@ -3,17 +3,6 @@ import sys
 import os
 import logging
 import tempfile
-import requests
-import re
-import pandas as pd
-import numpy as np
-import biotite.sequence as seq
-import biotite.sequence.align as align
-import biotite.structure as struc
-import biotite.structure.io as strucio
-import biotite.sequence.graphics as graphics
-from matplotlib.colors import ListedColormap
-import matplotlib.pyplot as plt
 import zipfile
 import io
 
@@ -114,13 +103,13 @@ def main():
                         st.image(ramachandran_img_both_buf, caption="Gráfico de Ramachandran")
 
                 except Exception as e:
-                    st.error(f"Error al calcular las nuevas métricas: {e}")
+                    st.error(f"Error al calcular las métricas: {e}")
 
                 # Crear un archivo ZIP en memoria
                 buffer = io.BytesIO()
                 with zipfile.ZipFile(buffer, "w") as zip_file:
-                    zip_file.writestr("wild_type.pdb", wt_pdb_data)
-                    zip_file.writestr("mutated.pdb", mutated_pdb_data)
+                    zip_file.writestr(f"{uniprot_query_code}-WildType.pdb", wt_pdb_data)
+                    zip_file.writestr(f"{uniprot_query_code}-{mutation}.pdb", mutated_pdb_data)
 
                 # Mover el puntero al inicio del archivo
                 buffer.seek(0)

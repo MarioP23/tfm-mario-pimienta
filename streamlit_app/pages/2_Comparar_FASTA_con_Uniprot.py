@@ -1,16 +1,11 @@
 import streamlit as st
 import sys
 import os
-from io import StringIO, BytesIO
+from io import StringIO
 import tempfile
 import pandas as pd
-import biotite.sequence as seq
-import biotite.sequence.align as align
-import biotite.structure as struc
-import biotite.structure.io as strucio
-import biotite.sequence.graphics as graphics
-import numpy as np
-import matplotlib.pyplot as plt
+import zipfile
+import io
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
 from parsers import fasta_parser
@@ -111,38 +106,33 @@ def main():
                     # Calculo de otros valores
                     try:
                         alignment_score, alignment_img_buf = align_sequences(fasta_seq, mutated_fasta_seq)
-                        ramachandran_img_wt_buf = ramachandran_plot(st.session_state.wt_pdb_filepath)
-                        ramachandran_img_mutated_buf = ramachandran_plot(st.session_state.mutated_pdb_filepath)
+                        ramachandran_img_both_buf = ramachandran_plot(st.session_state.wt_pdb_filepath, st.session_state.mutated_pdb_filepath)
                         
                         colu2.metric("Alignment Score", f"{alignment_score}")
 
-                        # Mostrar gráficos en un grid en Streamlit
-                        col1, col2, col3 = st.columns(3)
-
-                        with col1:
+                        with colu1:
                             st.image(alignment_img_buf, caption="Alineamiento de secuencias")
-                        with col2:
-                            st.image(ramachandran_img_wt_buf, caption="Gráfico de Ramachandran - WT")
-                        with col3:
-                            st.image(ramachandran_img_mutated_buf, caption="Gráfico de Ramachandran - Mutated")
+                        with colu2:
+                            st.image(ramachandran_img_both_buf, caption="Gráfico de Ramachandran - WT")
 
                     except Exception as e:
-                        st.error(f"Error al calcular las nuevas métricas: {e}")
+                        st.error(f"Error al calcular las métricas: {e}")
 
-                    # Descarga de ficheros PDB
+                    # Crear un archivo ZIP en memoria
+                    buffer = io.BytesIO()
+                    with zipfile.ZipFile(buffer, "w") as zip_file:
+                        zip_file.writestr(f"{uniprot_query_code}-WildType.pdb", wt_pdb_data)
+                        zip_file.writestr(f"{uniprot_query_code}-{mutation}.pdb", mutated_pdb_data)
+
+                    # Mover el puntero al inicio del archivo
+                    buffer.seek(0)
+
+                    # Botón para descargar el archivo ZIP
                     st.download_button(
-                        label=f"Descargar {uniprot_query_code}-WT PDB",
-                        data=wt_pdb_data,
-                        file_name="wild_type.pdb",
-                        mime="chemical/x-pdb",
-                        use_container_width=True
-                    )
-                    
-                    st.download_button(
-                        label=f"Descargar {uniprot_query_code}-{selected_variant_data['ID']} PDB",
-                        data=mutated_pdb_data,
-                        file_name="mutated.pdb",
-                        mime="chemical/x-pdb",
+                        label=f"Descargar {uniprot_query_code} - PDBs (WT y Mutado)",
+                        data=buffer,
+                        file_name="pdb_files.zip",
+                        mime="application/zip",
                         use_container_width=True
                     )
                     
@@ -153,16 +143,6 @@ def main():
                         data=multifasta,
                         file_name="multifasta.fasta",
                         mime="text/plain",
-                        use_container_width=True
-                    )
-
-                    # Crear fichero PDB combinado
-                    combined_pdb = wt_pdb_data + "\n" + mutated_pdb_data
-                    st.download_button(
-                        label="Descargar PDB combinado",
-                        data=combined_pdb,
-                        file_name="combined.pdb",
-                        mime="chemical/x-pdb",
                         use_container_width=True
                     )
 
