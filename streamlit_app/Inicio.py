@@ -44,13 +44,5 @@ def main():
         """
     )
 
-    st.header("Bibliografía")
-    st.write("""
-    EJEMPLOS:
-    
-    1. Berman, H. M., Westbrook, J., Feng, Z., Gilliland, G., Bhat, T. N., Weissig, H., ... & Bourne, P. E. (2000). The Protein Data Bank. Nucleic acids research, 28(1), 235-242.
-    2. Jumper, J., Evans, R., Pritzel, A., Green, T., Figurnov, M., Ronneberger, O., ... & Hassabis, D. (2021). Highly accurate protein structure prediction with AlphaFold. Nature, 596(7873), 583-589.
-    """)
-
 if __name__ == "__main__":
     main()
